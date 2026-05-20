@@ -8,6 +8,8 @@ import (
 	"charm.land/bubbles/v2/list"
 	"charm.land/bubbles/v2/textinput"
 	tea "charm.land/bubbletea/v2"
+	"github.com/muesli/reflow/truncate"
+	"github.com/muesli/reflow/wrap"
 )
 
 // sessionState is used to track which model is focused
@@ -20,7 +22,10 @@ type item struct {
 
 func (i item) FilterValue() string { return i.body }
 
-type itemDelegate struct{}
+type itemDelegate struct {
+	selectedIndex int
+	termWidth     int
+}
 
 func (d itemDelegate) Height() int { return 1 }
 
@@ -43,6 +48,7 @@ func (d itemDelegate) Render(w io.Writer, m list.Model, index int, listItem list
 
 	str := fmt.Sprintf("[%s] %s", markedDone, i.body)
 
+	str = truncate.StringWithTail(str, uint(m.Width()-5), "...")
 	if index == m.Index() {
 		str += " <"
 	}
@@ -51,7 +57,7 @@ func (d itemDelegate) Render(w io.Writer, m list.Model, index int, listItem list
 }
 
 const (
-	listHeight              = 14
+	listHeight              = 5
 	listWidth               = 20
 	inputView  sessionState = iota
 	listView
@@ -62,6 +68,8 @@ type mainModel struct {
 	input textinput.Model
 	list  list.Model
 	index int
+
+	width int
 }
 
 func newModel() mainModel {
@@ -70,6 +78,7 @@ func newModel() mainModel {
 	m.input = textinput.New()
 	m.list = list.New(items, itemDelegate{}, listWidth, listHeight)
 	m.list.SetFilteringEnabled(false)
+	m.list.SetShowHelp(false)
 
 	return m
 }
@@ -121,14 +130,26 @@ func (m mainModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			m.list, cmd = m.list.Update(msg)
 			cmds = append(cmds, cmd)
 		}
+	case tea.WindowSizeMsg:
+		m.width = msg.Width
+		m.list.SetWidth(msg.Width)
+		m.list.SetHeight(msg.Height - 6)
 	}
 
 	return m, tea.Batch(cmds...)
 }
 
 func (m mainModel) View() tea.View {
-	str := m.headerView() + m.input.View() + "\n" + m.list.View() + m.footerView()
-	return tea.NewView(str)
+	str := m.headerView() + "\n" + m.input.View() + "\n"
+	var wrapped_text string
+	i, ok := m.list.SelectedItem().(item)
+	if ok && m.width > 0 {
+		wrapped_text = wrap.String(i.body, m.width)
+	}
+	str += m.list.View() + "\n" + wrapped_text + "\n" + m.footerView()
+	v := tea.NewView(str)
+	v.AltScreen = true
+	return v
 }
 
 func (m *mainModel) Next() {
