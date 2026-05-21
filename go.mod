@@ -5,6 +5,8 @@ go 1.26.2
 require (
 	charm.land/bubbles/v2 v2.1.0
 	charm.land/bubbletea/v2 v2.0.6
+	github.com/google/uuid v1.6.0
+	github.com/mattn/go-sqlite3 v1.14.44
 	github.com/muesli/reflow v0.3.0
 )
 
