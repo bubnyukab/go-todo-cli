@@ -2,6 +2,7 @@ package main
 
 import (
 	"log"
+	"strings"
 
 	"charm.land/bubbles/v2/list"
 	"charm.land/bubbles/v2/textinput"
@@ -19,6 +20,7 @@ const (
 type model struct {
 	store    *store.Store
 	state    uint
+	styles   Styles
 	input    textinput.Model
 	list     list.Model
 	editMode bool
@@ -37,10 +39,15 @@ func newModel(s *store.Store) model {
 
 	m := model{state: inputView, store: s}
 	m.input = textinput.New()
+	m.input.Placeholder = "Add a new todo..."
 	m.input.Focus()
-	m.list = list.New(items, itemDelegate{}, 0, 0)
+	m.styles = newStyles()
+	m.input.SetStyles(m.styles.InputPlaceholder)
+	m.list = list.New(items, itemDelegate{styles: m.styles, state: inputView}, 0, 0)
 	m.list.SetFilteringEnabled(false)
 	m.list.SetShowHelp(false)
+	m.list.SetShowTitle(false)
+	m.list.SetShowStatusBar(false)
 
 	return m
 }
@@ -77,7 +84,16 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		case inputView:
 			switch msg.String() {
 			case "enter":
-				inputValue := m.input.Value()
+				inputValue := strings.TrimSpace(m.input.Value())
+
+				if inputValue == "" {
+					break
+				}
+
+				// Cap todo list to 20 task max
+				if !m.editMode && len(m.list.Items()) >= 20 {
+					break
+				}
 
 				if m.editMode {
 					selectedItem := m.list.SelectedItem().(store.Todo)
@@ -135,8 +151,9 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		}
 	case tea.WindowSizeMsg:
 		m.width = msg.Width
-		m.list.SetWidth(msg.Width)
-		m.list.SetHeight(msg.Height - 6)
+		m.list.SetWidth(m.width)
+		m.list.SetHeight(16)
+		m.input.SetWidth(m.width - 6)
 	}
 
 	return m, tea.Batch(cmds...)

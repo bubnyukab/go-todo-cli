@@ -11,12 +11,10 @@ import (
 	"github.com/bubnyukab/go-todo-cli/store"
 )
 
-type item struct {
-	body string
-	done bool
+type itemDelegate struct {
+	styles Styles
+	state  uint
 }
-
-type itemDelegate struct{}
 
 func (d itemDelegate) Height() int { return 1 }
 
@@ -25,24 +23,29 @@ func (d itemDelegate) Spacing() int { return 0 }
 func (d itemDelegate) Update(_ tea.Msg, _ *list.Model) tea.Cmd { return nil }
 
 func (d itemDelegate) Render(w io.Writer, m list.Model, index int, listItem list.Item) {
-	markedDone := " "
 	i, ok := listItem.(store.Todo)
 	if !ok {
 		return
 	}
 
+	checkbox := "[ ]"
 	if i.Done {
-		markedDone = "X"
+		checkbox = "[x]"
+	}
+
+	body := truncate.StringWithTail(i.Body, uint(m.Width()-5), "...")
+
+	var str string
+	if index == m.Index() && d.state == listView {
+		cb := d.styles.SelectedCheckbox.Render(checkbox)
+		bd := d.styles.SelectedBody.Width(m.Width() - len(checkbox) - 1).Render(" " + body)
+		str = cb + bd
+
+	} else if i.Done {
+		str = d.styles.Done.Render(checkbox + " " + body)
 	} else {
-		markedDone = " "
+		str = d.styles.Checkbox.Render(checkbox) + " " + body
 	}
 
-	str := fmt.Sprintf("[%s] %s", markedDone, i.Body)
-
-	str = truncate.StringWithTail(str, uint(m.Width()-5), "...")
-	if index == m.Index() {
-		str += " <"
-	}
-
-	fmt.Fprint(w, str)
+	fmt.Fprintln(w, str)
 }
