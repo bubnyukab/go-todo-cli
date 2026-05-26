@@ -48,6 +48,7 @@ func newModel(s *store.Store) model {
 	m.list.SetShowHelp(false)
 	m.list.SetShowTitle(false)
 	m.list.SetShowStatusBar(false)
+	m.list.SetShowPagination(false)
 
 	return m
 }
@@ -152,7 +153,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	case tea.WindowSizeMsg:
 		m.width = msg.Width
 		m.list.SetWidth(m.width)
-		m.list.SetHeight(16)
+		m.list.SetHeight(10)
 		m.input.SetWidth(m.width - 6)
 	}
 

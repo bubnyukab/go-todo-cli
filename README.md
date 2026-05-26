@@ -1,27 +1,48 @@
 # To Do CLI
 
-I wanted to build a custom todo cli. It will be a repl, have time tracking (when you started the task, when you ended the task), task completion, day-to-day progress tracking, in the future maybe analytics (so I will save every todo day into a db).
+I built a terminal-based todo app built with [Bubble Tea](https://github.com/charmbracelet/bubbletea).
 
-# Setup
+![demo](Todo.gif)
 
-`go run .`
+## Requirements
+
+- Go 1.22+
+
+## Setup
+
+```
+go build -0 todo . && ./todo
+```
 
 # Controls
 
-`InputView:
-    - "enter" to add todo
-    - "tab" to switch to List
-    - "ctrl+c" to quit
-ListView:
-    - "j/↓ move down, k/↑ move up"
-    - "tab" to switch to Input
-    - "space" to mark todo "done"
-    - "ctrl+c" to quit
-    - "ctrl+e" to edit current todo
-    - "ctrl+d" to delete current todo`
+## Input View
 
-# Todo
+| Key      | Action         |
+| -------- | -------------- |
+| `enter`  | Add todo       |
+| `tab`    | Switch to list |
+| `ctrl+c` | Quit           |
 
-[ ] Add timestamp tracking (click start on task and it start a timer, when marked done it stops and save the time to see how long the task took (ideas for further analytics maybe))
-[ ] Better UI/UX
-[ ] Add Per-Day todo lists. Automatically when new day starts, saves the todo list from yesterday, creates a new one that can be filled for today. Saves todo lists per day, in folders per month in folders per year. Also can be used for analytics (for example percentage of completed tasks, time per task, weekly/monthly kpis)
+## List View
+
+| Key       | Action              |
+| --------- | ------------------- |
+| `j` / `↓` | Move down           |
+| `k` / `↑` | Move up             |
+| `tab`     | Switch to input     |
+| `space`   | Mark todo done      |
+| `ctrl+e`  | Edit current todo   |
+| `ctrl+d`  | Delete current todo |
+| `ctrl+c`  | Quit                |
+
+## Roadmap
+
+- [ ] Time tracking — start a timer when a task begins, stop it when marked done
+- [ ] Per-day todo lists — automatically archive yesterday's list and start fresh each day
+- [ ] Analytics — completion rates, time per task, weekly/monthly stats
+- [x] Better UI/UX
+
+## License
+
+MIT

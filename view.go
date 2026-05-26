@@ -18,9 +18,10 @@ func (m model) View() tea.View {
 	str := m.headerView() + "\n"
 	str += m.inputView() + "\n"
 	str += m.statusView() + "\n"
-	str += m.list.View() + "\n"
+	str += m.listView() + "\n"
 	str += m.previewView() + "\n"
 	str += m.helpView()
+
 	v := tea.NewView(str)
 	v.AltScreen = true
 	return v
@@ -52,7 +53,22 @@ func (m model) statusView() string {
 	}
 	pct := done * 100 / total
 	text := fmt.Sprintf("%d/%d done (%d%%)", done, total, pct)
-	return m.styles.StatusBar.Render(text)
+	return m.styles.StatusBar.Padding(0, 0, 1, 2).Render(text)
+}
+
+func (m model) listView() string {
+	listView := m.list.View()
+	pagerView := m.list.Paginator.View()
+
+	styledList := lipgloss.NewStyle().PaddingLeft(1).Render(listView)
+
+	if len(m.list.Items()) > 10 {
+		styledPager := lipgloss.NewStyle().PaddingLeft(1).Render(pagerView)
+
+		return lipgloss.JoinVertical(lipgloss.Left, styledList, styledPager)
+	}
+
+	return styledList
 }
 
 func (m model) previewView() string {
@@ -77,6 +93,8 @@ func (m model) helpView() string {
 	var keys []key.Binding
 	if m.state == listView {
 		keys = []key.Binding{
+			key.NewBinding(key.WithKeys("tab"), key.WithHelp("tab", "input")),
+			key.NewBinding(key.WithKeys("ctrl+c"), key.WithHelp("ctrl+c", "quit")),
 			key.NewBinding(
 				key.WithKeys("\u2191", "\u2193"),
 				key.WithHelp("\u2191/\u2193", "navigate"),
@@ -84,14 +102,12 @@ func (m model) helpView() string {
 			key.NewBinding(key.WithKeys("space"), key.WithHelp("space", "toggle done")),
 			key.NewBinding(key.WithKeys("ctrl+e"), key.WithHelp("ctrl+e", "edit")),
 			key.NewBinding(key.WithKeys("ctrl+d"), key.WithHelp("ctrl+d", "delete")),
-			key.NewBinding(key.WithKeys("tab"), key.WithHelp("tab", "input")),
-			key.NewBinding(key.WithKeys("ctrl+c"), key.WithHelp("ctrl+c", "quit")),
 		}
 	} else {
 		keys = []key.Binding{
-			key.NewBinding(key.WithKeys("enter"), key.WithHelp("enter", "add/save")),
 			key.NewBinding(key.WithKeys("tab"), key.WithHelp("tab", "list")),
 			key.NewBinding(key.WithKeys("ctrl+c"), key.WithHelp("ctrl+c", "quit")),
+			key.NewBinding(key.WithKeys("enter"), key.WithHelp("enter", "add/save")),
 		}
 	}
 
