@@ -1,16 +1,14 @@
 Set Shell zsh
-Sleep 1.5s
-Type "./"
+Set Height 600
+
 Sleep 500ms
-Type "todo"
+Type "./todo"
 Enter
-Sleep 1.5s
+Sleep 1s
 Type "Hello"
 Enter
 Sleep 500ms
-Type "World"
-Sleep 500ms
-Type "!"
+Type "World!"
 Enter
 Sleep 500ms
 Tab
@@ -18,14 +16,14 @@ Type "jk"
 Enter
 Type " j "
 Tab
-Sleep 2.5s
+Sleep 1s
 Tab
 Type "k"
-Sleep 2s
+Sleep 1s
 Ctrl+E
 Sleep 500ms
 Backspace 6
-Type "This is edited"
+Type "You can edit it!"
 Enter
 Sleep 500ms
 Tab
