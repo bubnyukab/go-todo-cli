@@ -1,5 +1,6 @@
 Set Shell zsh
-Set Height 600
+Set Height 800
+Set Width 400
 
 Sleep 500ms
 Type "./todo"
@@ -7,10 +8,10 @@ Enter
 Sleep 1s
 Type "Hello"
 Enter
-Sleep 500ms
+Sleep 1s
 Type "World!"
 Enter
-Sleep 500ms
+Sleep 1ms
 Tab
 Type "jk"
 Enter
