@@ -2,7 +2,7 @@
 
 I built a terminal-based todo app built with [Bubble Tea](https://github.com/charmbracelet/bubbletea).
 
-![demo](Todo.gif)
+![demo](demo.gif)
 
 ## Requirements
 
