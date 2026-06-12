@@ -23,6 +23,8 @@ type Store struct {
 	conn *sql.DB
 }
 
+func New() *Store { return &Store{} }
+
 func (s *Store) Init() error {
 	dbPath, err := GetDatabasePath()
 	if err != nil {

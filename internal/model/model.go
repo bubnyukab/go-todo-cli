@@ -1,7 +1,6 @@
 package model
 
 import (
-	"log"
 	"strings"
 
 	"charm.land/bubbles/v2/list"
@@ -28,30 +27,55 @@ type model struct {
 	width    int
 }
 
-func NewModel(s *store.Store) model {
+func NewModel(s *store.Store) (model, error) {
 	todos, err := s.GetTodos()
 	if err != nil {
-		log.Fatal(err)
+		return model{}, err
 	}
+
 	items := make([]list.Item, len(todos))
 	for i, t := range todos {
 		items[i] = t
 	}
 
-	m := model{state: inputView, store: s}
-	m.input = textinput.New()
-	m.input.Placeholder = "Add a new todo..."
-	m.input.Focus()
-	m.styles = ui.NewStyles()
-	m.input.SetStyles(m.styles.InputPlaceholder)
-	m.list = list.New(items, ItemDelegate{Styles: m.styles, State: inputView}, 0, 0)
-	m.list.SetFilteringEnabled(false)
-	m.list.SetShowHelp(false)
-	m.list.SetShowTitle(false)
-	m.list.SetShowStatusBar(false)
-	m.list.SetShowPagination(false)
+	m := model{
+		state:  inputView,
+		store:  s,
+		styles: ui.NewStyles(),
+	}
 
-	return m
+	m.input = newInput(m.styles)
+	m.list = newList(items, m.styles)
+
+	return m, nil
+}
+
+func newInput(styles ui.Styles) textinput.Model {
+	input := textinput.New()
+	input.Placeholder = "Add a new todo..."
+	input.Focus()
+	input.SetStyles(styles.InputPlaceholder)
+	return input
+}
+
+func newList(items []list.Item, styles ui.Styles) list.Model {
+	l := list.New(
+		items,
+		ItemDelegate{
+			Styles: styles,
+			State:  inputView,
+		},
+		0,
+		0,
+	)
+
+	l.SetFilteringEnabled(false)
+	l.SetShowHelp(false)
+	l.SetShowTitle(false)
+	l.SetShowStatusBar(false)
+	l.SetShowPagination(false)
+
+	return l
 }
 
 func (m model) Init() tea.Cmd {

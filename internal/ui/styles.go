@@ -61,6 +61,7 @@ func NewStyles() Styles {
 func newInputStyles() textinput.Styles {
 	s := textinput.DefaultDarkStyles()
 	s.Focused.Placeholder = lipgloss.NewStyle().Foreground(lipgloss.Color("243"))
+
 	s.Blurred.Placeholder = lipgloss.NewStyle().Foreground(lipgloss.Color("238"))
 	s.Blurred.Text = lipgloss.NewStyle().Foreground(lipgloss.Color("238"))
 	s.Blurred.Prompt = lipgloss.NewStyle().Foreground(lipgloss.Color("238"))
