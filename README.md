@@ -13,7 +13,7 @@ I built a terminal-based todo app built with [Bubble Tea](https://github.com/cha
 To install the `todo` CLI globally so you can run it from any directory on your system, execute:
 
 ```
-go install [github.com/bubnyukab/go-todo-cli/cmd/todo@latest](https://github.com/bubnyukab/go-todo-cli/cmd/todo@latest)
+go install github.com/bubnyukab/go-todo-cli/cmd/todo@latest
 
 ```
 
