@@ -10,8 +10,11 @@ I built a terminal-based todo app built with [Bubble Tea](https://github.com/cha
 
 ## Setup
 
+To install the `todo` CLI globally so you can run it from any directory on your system, execute:
+
 ```
-go build -0 todo . && ./todo
+go install [github.com/bubnyukab/go-todo-cli/cmd/todo@latest](https://github.com/bubnyukab/go-todo-cli/cmd/todo@latest)
+
 ```
 
 # Controls
@@ -46,3 +49,7 @@ go build -0 todo . && ./todo
 ## License
 
 MIT
+
+```
+
+```

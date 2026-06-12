@@ -1,4 +1,4 @@
-package main
+package ui
 
 import (
 	"charm.land/bubbles/v2/textinput"
@@ -18,7 +18,7 @@ type Styles struct {
 	StatusBar        lipgloss.Style
 }
 
-func newStyles() Styles {
+func NewStyles() Styles {
 	return Styles{
 		Header: lipgloss.NewStyle().
 			Bold(true).

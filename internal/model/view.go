@@ -1,4 +1,4 @@
-package main
+package model
 
 import (
 	"fmt"
@@ -9,11 +9,11 @@ import (
 	"charm.land/lipgloss/v2"
 	"github.com/muesli/reflow/wrap"
 
-	"github.com/bubnyukab/go-todo-cli/store"
+	"github.com/bubnyukab/go-todo-cli/internal/store"
 )
 
 func (m model) View() tea.View {
-	m.list.SetDelegate(itemDelegate{styles: m.styles, state: m.state})
+	m.list.SetDelegate(ItemDelegate{Styles: m.styles, State: m.state})
 
 	str := m.headerView() + "\n"
 	str += m.inputView() + "\n"

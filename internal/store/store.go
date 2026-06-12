@@ -2,6 +2,10 @@ package store
 
 import (
 	"database/sql"
+	"fmt"
+	"log"
+	"os"
+	"path/filepath"
 
 	"github.com/google/uuid"
 	_ "github.com/mattn/go-sqlite3"
@@ -20,8 +24,12 @@ type Store struct {
 }
 
 func (s *Store) Init() error {
-	var err error
-	s.conn, err = sql.Open("sqlite3", "./todos.db")
+	dbPath, err := GetDatabasePath()
+	if err != nil {
+		log.Fatalf("unable to resolve database path: %v", err)
+	}
+
+	s.conn, err = sql.Open("sqlite3", dbPath)
 	if err != nil {
 		return err
 	}
@@ -78,4 +86,21 @@ func (s *Store) SaveTodo(todo Todo) error {
 func (s *Store) DeleteTodo(id uuid.UUID) error {
 	_, err := s.conn.Exec("DELETE FROM todos WHERE id = ?", id)
 	return err
+}
+
+// GetDatabasePath dynamically resolves the cross-platform path for todos.db
+func GetDatabasePath() (string, error) {
+	baseDir, err := os.UserConfigDir()
+	if err != nil {
+		return "", fmt.Errorf("could not detect user config directory: %w", err)
+	}
+
+	appDir := filepath.Join(baseDir, "todo")
+
+	err = os.MkdirAll(appDir, 0o755)
+	if err != nil {
+		return "", fmt.Errorf("could not create application directory: %w", err)
+	}
+
+	return filepath.Join(appDir, "todos.db"), nil
 }

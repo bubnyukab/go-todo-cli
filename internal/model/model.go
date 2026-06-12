@@ -1,4 +1,4 @@
-package main
+package model
 
 import (
 	"log"
@@ -9,7 +9,8 @@ import (
 	tea "charm.land/bubbletea/v2"
 	"github.com/google/uuid"
 
-	"github.com/bubnyukab/go-todo-cli/store"
+	"github.com/bubnyukab/go-todo-cli/internal/store"
+	"github.com/bubnyukab/go-todo-cli/internal/ui"
 )
 
 const (
@@ -20,14 +21,14 @@ const (
 type model struct {
 	store    *store.Store
 	state    uint
-	styles   Styles
+	styles   ui.Styles
 	input    textinput.Model
 	list     list.Model
 	editMode bool
 	width    int
 }
 
-func newModel(s *store.Store) model {
+func NewModel(s *store.Store) model {
 	todos, err := s.GetTodos()
 	if err != nil {
 		log.Fatal(err)
@@ -41,9 +42,9 @@ func newModel(s *store.Store) model {
 	m.input = textinput.New()
 	m.input.Placeholder = "Add a new todo..."
 	m.input.Focus()
-	m.styles = newStyles()
+	m.styles = ui.NewStyles()
 	m.input.SetStyles(m.styles.InputPlaceholder)
-	m.list = list.New(items, itemDelegate{styles: m.styles, state: inputView}, 0, 0)
+	m.list = list.New(items, ItemDelegate{Styles: m.styles, State: inputView}, 0, 0)
 	m.list.SetFilteringEnabled(false)
 	m.list.SetShowHelp(false)
 	m.list.SetShowTitle(false)

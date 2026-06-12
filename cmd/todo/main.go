@@ -5,7 +5,8 @@ import (
 
 	tea "charm.land/bubbletea/v2"
 
-	"github.com/bubnyukab/go-todo-cli/store"
+	"github.com/bubnyukab/go-todo-cli/internal/model"
+	"github.com/bubnyukab/go-todo-cli/internal/store"
 )
 
 func main() {
@@ -14,7 +15,7 @@ func main() {
 		log.Fatalf("unable to init store: %v", err)
 	}
 
-	p := tea.NewProgram(newModel(s))
+	p := tea.NewProgram(model.NewModel(s))
 	if _, err := p.Run(); err != nil {
 		log.Fatalf("unable to run tui: %v", err)
 	}

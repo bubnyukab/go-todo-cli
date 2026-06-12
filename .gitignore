@@ -1,5 +1,18 @@
-# Database
-*.db
+# Prerequisites
+*.d
 
-# Compiled binaries
-todo
+# Compiled binaries and local executables
+# This ignores the 'todo' binary file currently sitting in your root folder
+/todo
+/todo.exe
+bin/
+
+# Local database files (in case you or a script accidentally generate one locally during testing)
+*.db
+*.db-journal
+*.sqlite
+*.sqlite3
+
+# Operating system files
+.DS_Store
+Thumbs.db
